@@ -1,0 +1,55 @@
+# Task 5: Strategy & Leadership
+
+## Q1: Sprint velocity is dropping due to flaky automation tests. How will you handle this?
+
+    The first thing I would do is stop treating flaky tests as a test problem. 
+    They are team problem. 
+    When flaky tests keep failing for no real reason, engineers start ignoring failures, 
+    and that's when actual bugs slip through. 
+    So the priority is restoring trust in the suite before anything else.
+
+    I would start by pulling the failure logs for the last two or three sprints and categorizing them
+        1) environment issues, 
+        2) timing/wait issues, 
+        3) test data conflicts, 
+        4) genuinely unstable application behavior. 
+
+    In my experience, the majority of flakiness comes from one of two things 
+        1) hardcoded waits 
+        2) tests stepping on each other's data.
+
+    Once we know the cause, we quarantine the flaky tests immediately. 
+    They move out of the main pipeline into a separate run so they stop blocking the team. 
+    This alone usually gives the velocity a bump because engineers aren't spending half their morning investigating failures that turn out to be nothing.
+    From there we fix them in priority order. 
+    Any test that's been flaky for more than two sprints and hasn't been fixed gets deleted, 
+    a missing test is better than a lying one. I would also introduce a simple rule going forward 
+    if a test fails three times in a row with no code changes, it gets flagged for review, not re-run indefinitely.
+    On the team side, I will set aside time in each sprint specifically for test maintenance. 
+    Automation debt is real, and if you don't budget time for it, it compounds.
+
+
+## Q2: Two critical bugs were missed in QA and reported by the client in production. What's your approach?
+
+The first step is to not be defensive about it. 
+Critical bugs reaching production is a process failure, not a people failure, and treating it that way makes it easier to fix honestly.
+
+Right after the incident, I'd do a quick RCA with the team — not a blame session, just a factual walkthrough. 
+Where were these bugs? Were they in a feature we tested? Were they edge cases we didn't consider? 
+Were they regression issues from an older area we assumed was stable? The answer changes what we fix.
+
+If we tested the area but missed the bug, the question is whether our test cases were shallow. 
+This usually means we were testing happy paths and not spending enough time on boundary conditions or integration points. I will review the test cases for that feature and fill the gaps.
+
+If we didn't test the area at all, then we have a coverage problem. 
+That could be scope creep during the sprint, unclear requirements, or assumptions about what the dev team already covered. 
+In that case I will set up a proper handoff checklist between dev and QA so nothing falls in the gap.
+
+Going forward I will also push for adding a regression test for every production bug we find. 
+It sounds obvious but it often doesn't happen because teams are already moving to the next sprint. 
+That one habit alone significantly reduces repeat escapes.
+
+Finally, I will have a transparent conversation with the client. 
+Not just an apology, but a brief explanation of what we found, what we changed, and how we're tracking it. 
+Clients generally respond better to that than silence followed by a promise it won't happen again.
+The above is a real time experience that I faced in 2024. Just FYI. 
