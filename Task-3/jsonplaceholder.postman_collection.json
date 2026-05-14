@@ -1,0 +1,128 @@
+{
+    "info": {
+        "name": "JSONPlaceholder API Tests",
+        "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "description": "Test suite for JSONPlaceholder REST API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "GET /posts",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "https://jsonplaceholder.typicode.com/posts",
+                    "protocol": "https",
+                    "host": ["jsonplaceholder", "typicode", "com"],
+                    "path": ["posts"]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 200', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test('Response is an array', function () {",
+                            "    var body = pm.response.json();",
+                            "    pm.expect(body).to.be.an('array');",
+                            "    pm.expect(body.length).to.be.above(0);",
+                            "});",
+                            "",
+                            "pm.test('Each post has required fields', function () {",
+                            "    var body = pm.response.json();",
+                            "    body.forEach(function(post) {",
+                            "        pm.expect(post).to.have.all.keys('userId', 'id', 'title', 'body');",
+                            "    });",
+                            "});",
+                            "",
+                            "pm.test('Response time is under 2 seconds', function () {",
+                            "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "POST /posts",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "url": {
+                    "raw": "https://jsonplaceholder.typicode.com/posts",
+                    "protocol": "https",
+                    "host": ["jsonplaceholder", "typicode", "com"],
+                    "path": ["posts"]
+                },
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"title\": \"test post title\",\n    \"body\": \"test post body\",\n    \"userId\": 1\n}"
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 201', function () {",
+                            "    pm.response.to.have.status(201);",
+                            "});",
+                            "",
+                            "pm.test('Response contains the same title and body', function () {",
+                            "    var body = pm.response.json();",
+                            "    var requestBody = JSON.parse(pm.request.body.raw);",
+                            "    pm.expect(body.title).to.eql(requestBody.title);",
+                            "    pm.expect(body.body).to.eql(requestBody.body);",
+                            "});",
+                            "",
+                            "pm.test('Response has an id assigned', function () {",
+                            "    var body = pm.response.json();",
+                            "    pm.expect(body.id).to.be.a('number');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "DELETE /posts/{id}",
+            "request": {
+                "method": "DELETE",
+                "url": {
+                    "raw": "https://jsonplaceholder.typicode.com/posts/1",
+                    "protocol": "https",
+                    "host": ["jsonplaceholder", "typicode", "com"],
+                    "path": ["posts", "1"]
+                }
+            },
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 200 or 204', function () {",
+                            "    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                            "});",
+                            "",
+                            "pm.test('Response time is under 2 seconds', function () {",
+                            "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ]
+        }
+    ]
+}
